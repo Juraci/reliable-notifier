@@ -39,7 +39,7 @@ const available = (i, el) => {
 };
 
 const findSentNotification = (items, link) => items.find(item => item.link === link);
-const alereadyNotified = item => !item.notified;
+const alreadyNotified = item => !item.notified;
 
 const sendTwilioMsg = async (notification) => {
   const message = {
@@ -65,9 +65,9 @@ const notify = (i, el) => {
   let item = findSentNotification(notifiable, result.link);
   if (!item) notifiable.push(result);
 
-  console.log(`> Notifiable items: ${notifiable.filter(alereadyNotified).length}`);
+  console.log(`> Notifiable items: ${notifiable.filter(alreadyNotified).length}`);
   notifiable
-    .filter(alereadyNotified)
+    .filter(alreadyNotified)
     .map(sendTwilioMsg);
 };
 
