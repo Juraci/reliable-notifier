@@ -2,6 +2,8 @@
 
 Cansado do "Avise-me" de um certo site de hardware que nunca funciona.
 
+Scraper que roda em um certo intervalo, verifica se o item esta disponivel e manda sms pro seu numero.
+
 Exemplo de uso
 ```
 $> TWILIO_ACCOUNT_SID="<twilio-sid>" \
