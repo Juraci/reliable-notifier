@@ -49,6 +49,8 @@ const checkPage = async () => {
 
     const content = await page.content();
     const $ = cheerio.load(content);
+
+    console.log(`> potential items discovered: ${$(selector).length}`);
     $(selector)
       .filter(available)
       .map(notify);
