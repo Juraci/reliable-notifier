@@ -38,7 +38,20 @@ const available = (i, el) => {
   return !cheerio(button[0]).attr('src').includes('comprar_off');
 };
 
+const findSentNotification = (items, link) => items.find(item => item.link === link);
 const alereadyNotified = item => !item.notified;
+
+const sendTwilioMsg = async (notification) => {
+  const message = {
+    body: `${notification.name} \n ${notification.link}`,
+    from: fromNumber,
+    to: toNumber,
+  };
+
+  const response = await client.messages.create(message);
+  console.log(`> Twilio API response: ${response.status}`);
+  notification.notified = response.status === 'sent' || response.status === 'queued';
+};
 
 const notify = (i, el) => {
   const result = {
@@ -49,23 +62,13 @@ const notify = (i, el) => {
   };
   console.log(result);
 
-  let item = notifiable.find(item => item.link === result.link);
+  let item = findSentNotification(notifiable, result.link);
   if (!item) notifiable.push(result);
 
+  console.log(`> Notifiable items: ${notifiable.filter(alereadyNotified).length}`);
   notifiable
     .filter(alereadyNotified)
-    .map(n => {
-      client
-        .messages
-        .create({
-          body: `${result.name} \n ${result.link}`,
-          from: fromNumber,
-          to: toNumber,
-        }).then(message => {
-          console.log(message.status)
-          if (message.status === 'sent' || message.status === 'queued') n.notified = true;
-        });
-    });
+    .map(sendTwilioMsg);
 };
 
 const checkPage = async () => {
