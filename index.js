@@ -38,6 +38,8 @@ const available = (i, el) => {
   return !cheerio(button[0]).attr('src').includes('comprar_off');
 };
 
+const alereadyNotified = item => !item.notified;
+
 const notify = (i, el) => {
   const result = {
     name: cheerio(el).find(linkSelector).text(),
@@ -51,7 +53,7 @@ const notify = (i, el) => {
   if (!item) notifiable.push(result);
 
   notifiable
-    .filter(n => n.notified === false)
+    .filter(alereadyNotified)
     .map(n => {
       client
         .messages
