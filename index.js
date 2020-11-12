@@ -20,6 +20,7 @@ const client = Client(accountSid, authToken);
 const notifiable = [];
 
 const variablesCheck = () => {
+  console.log(`--------------------------------------\n`);
   console.log(`---- from number:    ${fromNumber}`);
   console.log(`---- to number:      ${toNumber}`);
   console.log(`---- root url:       ${rootURL}`);
@@ -30,6 +31,7 @@ const variablesCheck = () => {
   console.log(`---- price selector: ${priceSelector}`);
   console.log(`---- link selector:  ${linkSelector}`);
   console.log(`---- interval:       ${interval}`);
+  console.log(`\n--------------------------------------`);
 };
 
 const available = (i, el) => {
@@ -96,4 +98,5 @@ const checkPage = async () => {
 }
 
 variablesCheck();
+sendTwilioMsg({ name: "Initialized test", link: "" });
 setInterval(checkPage, interval);
