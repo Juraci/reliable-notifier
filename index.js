@@ -34,7 +34,7 @@ const variablesCheck = () => {
 
 const available = (i, el) => {
   const button = cheerio(el).find('[alt="botao comprar"]');
-  if (button == []) { return false };
+  if (button == []) return false;
   return !cheerio(button[0]).attr('src').includes('comprar_off');
 };
 
