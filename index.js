@@ -1,6 +1,11 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
+const Client = require('twilio');
 
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const fromNumber = process.env.TWILIO_FROM_NUMBER;
+const toNumber = process.env.TO_NUMBER;
 const rootURL = process.env.ROOTURL;
 const subResource = process.env.SUBRESOURCE;
 const queryString = process.env.QUERY;
@@ -11,7 +16,12 @@ const linkSelector = process.env.LINKSELECTOR;
 const interval = process.env.INTERVAL || 60000;
 let executionCount = 0;
 
+const client = Client(accountSid, authToken);
+const notifiable = [];
+
 const variablesCheck = () => {
+  console.log(`---- from number:    ${fromNumber}`);
+  console.log(`---- to number:      ${toNumber}`);
   console.log(`---- root url:       ${rootURL}`);
   console.log(`---- sub resource:   ${subResource}`);
   console.log(`---- query string:   ${queryString}`);
@@ -33,9 +43,27 @@ const notify = (i, el) => {
     name: cheerio(el).find(linkSelector).text(),
     price: cheerio(el).find(priceSelector).text(),
     link: `${rootURL}${cheerio(el).find(linkSelector).attr('href')}`,
+    notified: false,
   };
-
   console.log(result);
+
+  let item = notifiable.find(item => item.link === result.link);
+  if (!item) notifiable.push(result);
+
+  notifiable
+    .filter(n => n.notified === false)
+    .map(n => {
+      client
+        .messages
+        .create({
+          body: `${result.name} \n ${result.link}`,
+          from: fromNumber,
+          to: toNumber,
+        }).then(message => {
+          console.log(message.status)
+          if (message.status === 'sent' || message.status === 'queued') n.notified = true;
+        });
+    });
 };
 
 const checkPage = async () => {
