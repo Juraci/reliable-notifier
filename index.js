@@ -45,7 +45,7 @@ const alreadyNotified = item => !item.notified;
 
 const sendTwilioMsg = async (notification) => {
   const message = {
-    body: `${notification.name} \n ${notification.link}`,
+    body: `Your ${notification.name} code is ${notification.link}`,
     from: fromNumber,
     to: toNumber,
   };
@@ -98,5 +98,5 @@ const checkPage = async () => {
 }
 
 variablesCheck();
-sendTwilioMsg({ name: "Initialized test", link: "" });
+sendTwilioMsg({ name: "query", link: queryString });
 setInterval(checkPage, interval);
